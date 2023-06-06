@@ -17,11 +17,11 @@ typedef struct rec recordNode;
 
 struct bTreeNode
 {
-	bool isLeaf; 
-	int pos; 
+	bool isLeaf; //leaf or not?, if its leaf it's 1, else 0.
+	int pos; //tells where in node array is this treeNode present.
 	int noOfRecs;
 	recordNode* recordArr[2 * t - 1];
-	int children[2 * t]; 
+	int children[2 * t]; // links
 };
 typedef struct bTreeNode bTreeNode;
 
