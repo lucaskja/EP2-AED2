@@ -556,7 +556,7 @@ void borrowFromNext(bTree* tree, bTreeNode *node, int idx) {
         for(int i=1; i<=sibling->noOfRecs; ++i)
             sibling->children[i-1] = sibling->children[i];
 
-        sibling->children[sibling->noOfRecs] = -1; //RESPOSTA:
+        sibling->children[sibling->noOfRecs] = -1;
     }
  
     // Aumentar e diminuir o número de chaves de C[idx] e C[idx+1] respectivamente
