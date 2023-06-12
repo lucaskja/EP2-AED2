@@ -14,7 +14,7 @@ int main(int argc, char const *argv[])
 		exit(0);
 	}
 	
-	int len,i;
+	int len, i, j;
     printf("How many records do you want to build from dataset?");
 	scanf("%d",&len);
 
@@ -29,16 +29,20 @@ int main(int argc, char const *argv[])
     if(!strcmp(argv[1],"-d"))
     {
 	    int key;
-	    sscanf(argv[2],"%d",&key);
-	    bool res = removeFromTree(tree,key);
-    	if(res)
-    	{
-    		printf("Successfull Deletion.\n");
-    	}
-    	else
-    	{
-    		printf("Deletion not successful.\n");
-    	}
+		j=2;
+		while(argv[j] != NULL){
+			sscanf(argv[j],"%d",&key);
+	    	bool res = removeFromTree(tree,key);
+    		if(res)
+    		{
+    			printf("Successfull Deletion.\n");
+    		}
+    		else
+    		{
+    			printf("Deletion not successful.\n");
+    		}
+			j++;
+		} 
     }
 
         traverse(tree, tree->root);

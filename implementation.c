@@ -41,7 +41,7 @@ bTreeNode* nodeInit(bTreeNode* node,bool isLeaf,bTree* tree)
 }
 
 void writeFile(bTree* ptr_tree, bTreeNode* p, int pos)
-{   // pos = -1; usa nextPos
+{
     if(pos == -1) {
         pos = ptr_tree->nextPos++;
     }
