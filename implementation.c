@@ -1,4 +1,8 @@
 #include "headers.h"
+
+// Respostas das perguntas feitas no ep:
+// https://docs.google.com/document/d/13G6AX5XshXBNPPcrCFj1wfamBe47ywR9XHQNA26EyTM/edit#
+
 bTree* createTree(char* fileName,bool mode)
 {
 	bTree* tree = malloc(sizeof(bTree));
@@ -413,7 +417,7 @@ void removeNode(bTree* tree, bTreeNode* node, int k) {
 }
 
 
-// Uma função para obter o antecessor das chaves[idx]
+// Uma função para obter o antecessor das keys[idx]
 recordNode* getPred(bTree* tree, bTreeNode *node, int idx) {
     // Continue a deslocar-se para o nó mais à direita até chegar a uma folha
     bTreeNode *curr = malloc(sizeof(bTreeNode));
