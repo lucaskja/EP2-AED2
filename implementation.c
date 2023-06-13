@@ -8,7 +8,7 @@
 /**   EACH-USP - Primeiro Semestre de 2022                                              **/
 /**   94 - Karina Valdivia Delgado                                                      **/
 /**                                                                                     **/
-/**   Primeiro Exercicio-Programa                                                       **/
+/**   Primeira Parte do Segundo Exercício Programa                                      **/
 /**                                                                                     **/
 /**   Lucas Kledeglau Jahchan Alves             13732182                                **/
 /**   Guilherme Campos Silva Lemes Prestes      13720460                                **/
