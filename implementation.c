@@ -598,9 +598,8 @@ bTreeNode* merge(bTree* tree, bTreeNode *node, int idx) {
         for(int i=0; i<=sibling->noOfRecs; ++i)
             child->children[i+t] = sibling->children[i];
     }
-
-    // Moving all keys after idx in the current node one step before -
-    // to fill the gap created by moving keys[idx] to C[idx]
+	// Move todas as chaves depois de idx no nó atual uma posição anterior - 
+	// para não deixar espaços vazios criados pelo fato de movermos as keys[idx] para C[idx]
     for (int i=idx+1; i<node->noOfRecs; ++i)
         node->recordArr[i-1] = node->recordArr[i];
  
