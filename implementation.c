@@ -645,8 +645,7 @@ bool removeFromTree(bTree* tree, int key) {
     readFile(tree, root, tree->root);
 
     bool found = search(tree, key);
-    if(found);
-        removeNode(tree, root, key); 
+    if(found) removeNode(tree, root, key); //Estava errado essa parte do código, pois tinha uma linha que não fazia nada
 
     free(root);
     return found;
