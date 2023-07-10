@@ -1,72 +1,90 @@
 #include "headers.h"
+
 int main(int argc, char const *argv[])
 {
 
-	if(argc==1)
-	{
-		printf("Please enter one of the options below:\n");
-		printf("Commands:\n");
-		printf("./run [OPTIONS]\n");
-		printf("-b [KEY] -->for building a tree.\n");
-		printf("-s [KEY] -->for searching a [KEY].\n");
-		printf("-d [KEY] -->for deleting a [KEY].\n");
-		printf("Exiting now\n");
-		exit(0);
-	}
-	
-	int len, i, j;
-    printf("How many records do you want to build from dataset?");
-	scanf("%d",&len);
+	printf("Please enter one of the options below:\n");
+	printf("Commands:\n");
+	printf("Insert: I <ID>;<Title>;<Author>;<Year>\n");
+	printf("Remove: R <ID>\n");
+	printf("Search: B <ID>\n");
+	printf("P1\n");
+	printf("P2\n");
+	printf("P3\n");
+	printf("Close: F\n");
 
-    recordNode *records = getData("data/dataset.csv", len);
-    bTree* tree = createTree("tree.dat",false);
-    
-    for(i=0;i<len;i++)
+	char option[2]; 
+	bTree* tree = createTree("tree.dat","data.dat",false);
+	while(strcmp(option, "F")){
+		scanf("%s", option);
+
+	if(!strcmp(option, "I"))
     {
-    	insert(tree,&records[i]);
+
+	char str[100], nome[30],titulo[30];
+    int key, ano;
+    scanf("%[^\n]s",str);
+   	char * token = strtok(str, ";");
+   	int i = 0;
+      while(i < 4) {
+        if(i == 0) key = atoi(token);
+        if(i == 1) strcpy(titulo, token);
+        if(i == 2) strcpy(nome, token);
+        if(i == 3) ano = atoi(token);
+        token = strtok(NULL, ";");
+        i++;
+   		}	
+      insert(tree,key,createRecord(tree,key,titulo,nome,ano));
+
     }
 
-    if(!strcmp(argv[1],"-d"))
+    if(!strcmp(option, "R"))
     {
 	    int key;
-		j=2;
-		while(argv[j] != NULL){
-			sscanf(argv[j],"%d",&key);
-	    	bool res = removeFromTree(tree,key);
-    		if(res)
-    		{
-    			printf("Successfull Deletion.\n");
-    		}
-    		else
-    		{
-    			printf("Deletion not successful.\n");
-    		}
-			j++;
-		} 
+	    scanf("%d",&key);
+	    bool res = removeFromTree(tree,key);
+    	if(res)
+    	{
+    		printf("Successfull Deletion.\n");
+    	}
+    	else
+    	{
+    		printf("Deletion not successful.\n");
+    	}
     }
 
-        traverse(tree, tree->root);
 
-	if(!strcmp(argv[1],"-s"))
+	if(!strcmp(option, "B"))
     {
-	    // printf("Time Taken to build tree: %f seconds\n",timeToBuild);
 	    int key;
-	    sscanf(argv[2],"%d",&key);
-	    recordNode* res = search(tree,key);
-
+	    scanf("%d",&key);
+	    recordNode* res = search(tree,key); // entender melhor o search
 		if(res != NULL) {
-			printf("key\tcountry\tgrate\tscore\trate\n");
-			printf("%d\t",res->key );
-			printf("%s\t",res->country );
-			printf("%s\t",res->grate );
-			printf("%d\t",res->score );
-			printf("%d\n",res->rate );
+			printf("%i\t%s\t%s\t%i\n", res->codigoLivro, res->titulo, res->nomeCompletoPrimeiroAutor, res->anoPublicacao);
 
 			free(res);
 		} else
-			printf("Record not found!");
+			printf("O livro com código %d não existe na biblioteca", key);
+    	
     }
 
-	free(records);
+	if(!strcmp(option, "P1"))
+    {
+	  traverse(tree, tree->root);
+    }
+
+	if(!strcmp(option, "P2"))
+    {
+		hardPrint(tree);
+	}
+
+	if(!strcmp(option, "P3"))
+    {
+    	hardRecPrint(tree);
+	}
+
+}
 	free(tree);
+
 }	
+
