@@ -18,7 +18,7 @@
 /**                                                                                     **/
 /*****************************************************************************************/
 
-bTree* createTree(char* fileName,bool mode)
+bTree* createTree(char* fileName, char* registryFileName, bool mode)
 {
 	bTree* tree = malloc(sizeof(bTree));
     
@@ -470,7 +470,7 @@ void removeNode(bTree* tree, bTreeNode* node, int k, bool removeRec) {
         }
 
         // Se o último filho foi fundido, ele deve ter sido fundido com o filho anterior
-        // e então nós recursamos no (idx-1)th filho. Caso contrário, nós recursamos no
+        // anterior e então nós recursamos no (idx-1)th filho. Caso contrário, nós recursamos no
         // (idx)th child que agora tem pelo menos t chaves
         if (flag && idx > node->noOfRecs) {
             bTreeNode *sibling = malloc(sizeof(bTreeNode));
@@ -492,7 +492,7 @@ void removeNode(bTree* tree, bTreeNode* node, int k, bool removeRec) {
 
 
 // Uma função para obter o antecessor das keys[idx]
-recordNode* getPred(bTree* tree, bTreeNode *node, int idx) {
+int setFromPred(bTree* tree, bTreeNode *node, int idx, bool removeRec) {
     // Continue a deslocar-se para o nó mais à direita até chegar a uma folha
     bTreeNode *curr = malloc(sizeof(bTreeNode));
     readFile(tree, curr, node->children[idx]);
@@ -501,15 +501,20 @@ recordNode* getPred(bTree* tree, bTreeNode *node, int idx) {
         readFile(tree, curr, curr->children[curr->noOfRecs]);
     }
         
-    // Devolver a última chave da folha
-    recordNode* result = curr->recordArr[curr->noOfRecs-1];
+    int keyToBeDeleted = curr->keyRecArr[curr->noOfRecs-1];
+
+    if(removeRec)
+      removeRecFile(tree, node->posRecArr[idx]);
+    node->keyRecArr[idx] = curr->keyRecArr[curr->noOfRecs-1];
+    node->posRecArr[idx] = curr->posRecArr[curr->noOfRecs-1];
+
     free(curr);
     return keyToBeDeleted;
 }
 
 int setFromSucc(bTree* tree, bTreeNode *node, int idx, bool removeRec) {
  
-    // Move o nó mais à esquerda a partir de C[idx+1] até chegar a uma folha
+    // Continuar a mover o nó mais à esquerda a partir de C[idx+1] até chegar a uma folha
     bTreeNode *curr = malloc(sizeof(bTreeNode));
     readFile(tree, curr, node->children[idx+1]);
     while (!curr->isLeaf){
@@ -527,7 +532,6 @@ int setFromSucc(bTree* tree, bTreeNode *node, int idx, bool removeRec) {
     return keyToBeDeleted;
 }
  
-
 // Uma função para preencher a criança C[idx] que tem menos de t-1 chaves
 void fill(bTree* tree, bTreeNode *node, int idx) {
     bTreeNode *cPrev = malloc(sizeof(bTreeNode));
@@ -546,7 +550,7 @@ void fill(bTree* tree, bTreeNode *node, int idx) {
         borrowFromNext(tree, node, idx);
     }
  
-    // Fusão de C[idx] com o seu irmão
+    // Fundir C[idx] com o seu irmão
     // Se C[idx] for o último filho, funde-o com o seu irmão anterior
     // Caso contrário, funde-o com o seu irmão seguinte
     else {
@@ -580,21 +584,22 @@ void borrowFromPrev(bTree* tree, bTreeNode *node, int idx) {
         child->posRecArr[i+1] = child->posRecArr[i];
     }
  
-    // Se C[idx] não for uma folha, move todos os seus apontadores filhos um passo à frente
+    // Se C[idx] não for uma folha, mover todos os seus apontadores filhos um passo à frente
     if (!child->isLeaf) {
         for(int i=child->noOfRecs; i>=0; --i)
             child->children[i+1] = child->children[i];
     }
  
     // Definir a primeira chave do filho igual a keys[idx-1] do nó actual
-    child->recordArr[0] = node->recordArr[idx-1];
+    child->keyRecArr[0] = node->keyRecArr[idx-1];
+    child->posRecArr[0] = node->posRecArr[idx-1];
  
     // Mover o último filho do irmão como o primeiro filho de C[idx]
     if (!node->isLeaf) {
         child->children[0] = sibling->children[sibling->noOfRecs];
         sibling->children[sibling->noOfRecs] = -1;
     }
-    
+ 
     // Deslocar a chave do irmão para o pai
     // Isto reduz o número de chaves no irmão
     node->keyRecArr[idx-1] = sibling->keyRecArr[sibling->noOfRecs-1];
@@ -635,10 +640,12 @@ void borrowFromNext(bTree* tree, bTreeNode *node, int idx) {
     node->posRecArr[idx] = sibling->posRecArr[0];
  
     // Mover todas as chaves no irmão um passo atrás
-    for (int i=1; i<sibling->noOfRecs; ++i)
-        sibling->recordArr[i-1] = sibling->recordArr[i];
+    for (int i=1; i<sibling->noOfRecs; ++i) {
+        sibling->keyRecArr[i-1] = sibling->keyRecArr[i];
+        sibling->posRecArr[i-1] = sibling->posRecArr[i];
+    }
  
-    // Move os ponteiros filhos um passo atrás
+    // Mover os ponteiros filhos um passo atrás
     if (!sibling->isLeaf) {
         for(int i=1; i<=sibling->noOfRecs; ++i)
             sibling->children[i-1] = sibling->children[i];
@@ -646,7 +653,7 @@ void borrowFromNext(bTree* tree, bTreeNode *node, int idx) {
         sibling->children[sibling->noOfRecs] = -1; //RESPOSTA:
     }
  
-    // Aumenta e diminui o número de chaves de C[idx] e C[idx+1] respectivamente
+    // Aumentar e diminuir o número de chaves de C[idx] e C[idx+1] respectivamente
     child->noOfRecs += 1;
     sibling->noOfRecs -= 1;
     
@@ -671,11 +678,14 @@ bTreeNode* merge(bTree* tree, bTreeNode *node, int idx) {
     readFile(tree, sibling, node->children[idx+1]);
     
     // Retirar uma chave do nó actual e inseri-la na (t-1)ª posição de C[idx]
-    child->recordArr[t-1] = node->recordArr[idx];
+    child->keyRecArr[t-1] = node->keyRecArr[idx];
+    child->posRecArr[t-1] = node->posRecArr[idx];
  
     // Copiar as chaves de C[idx+1] para C[idx] no final
-    for (int i=0; i<sibling->noOfRecs; ++i)
-        child->recordArr[i+t] = sibling->recordArr[i];
+    for (int i=0; i<sibling->noOfRecs; ++i) {
+        child->keyRecArr[i+t] = sibling->keyRecArr[i];
+        child->posRecArr[i+t] = sibling->posRecArr[i];
+    }
  
     // Copying the child pointers from C[idx+1] to C[idx]
     if (!child->isLeaf) {
@@ -690,11 +700,11 @@ bTreeNode* merge(bTree* tree, bTreeNode *node, int idx) {
         node->posRecArr[i-1] = node->posRecArr[i];
     }
  
-    // Move os apontadores filhos depois de (idx+1) no nó actual um passo antes
+    // Mover os apontadores filhos depois de (idx+1) no nó actual um passo antes
     for (int i=idx+2; i<=node->noOfRecs; ++i) 
         node->children[i-1] = node->children[i];
-    node->children[node->noOfRecs] = -1;
-    // Actualizar a contagem de chaves do nó filho e do nó actual
+    node->children[node->noOfRecs] = -1; //RESPOSTA:
+    // Atualizar a contagem de chaves do nó filho e do nó atual
     child->noOfRecs += sibling->noOfRecs+1;
     node->noOfRecs--;
  
@@ -718,9 +728,10 @@ bool removeFromTree(bTree* tree, int key) {
     bTreeNode *root = malloc(sizeof(bTreeNode));
     readFile(tree, root, tree->root);
 
-    bool found = search(tree, key);
-    if(found);
-        removeNode(tree, root, key); 
+    if(search(tree, key) != NULL)
+        removeNode(tree, root, key, true);
+    else
+        return false;
 
     free(root);
     return true;
