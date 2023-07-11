@@ -8,13 +8,12 @@
 /**   EACH-USP - Primeiro Semestre de 2022                                              **/
 /**   94 - Karina Valdivia Delgado                                                      **/
 /**                                                                                     **/
-/**   Primeiro Exercicio-Programa                                                       **/
+/**   Segundo Exercicio-Programa                                                        **/
 /**                                                                                     **/
 /**   Lucas Kledeglau Jahchan Alves             13732182                                **/
 /**   Guilherme Campos Silva Lemes Prestes      13720460                                **/
 /**   Vinicius Kazuo Inagaki                    13747967                                **/
-/**   Respostas das perguntas feitas no ep:                                             **/
-/**   https://docs.google.com/document/d/13G6AX5XshXBNPPcrCFj1wfamBe47ywR9XHQNA26EyTM   **/
+/**                                                                                     **/
 /**                                                                                     **/
 /*****************************************************************************************/
 
@@ -79,7 +78,8 @@ void readFile(bTree* ptr_tree, bTreeNode* p, int pos) {
 
 void removeFile(bTree* ptr_tree, int pos) {    
     bTreeNode* p = (recordNode*) malloc(sizeof(bTreeNode));
-    p->pos = -999999;
+    readFile(ptr_tree, p, pos);
+    p->valid = true;
 
     writeFile(ptr_tree, p, pos);
     free(p);
@@ -101,7 +101,8 @@ void readRecFile(bTree* ptr_tree, recordNode* p, int pos) {
 
 void removeRecFile(bTree* ptr_tree, int pos) {    
     recordNode* p = (recordNode*) malloc(sizeof(recordNode));
-    p->codigoLivro = -999999;
+    readRecFile(ptr_tree, p, pos);
+    p->valid = false;
 
     writeRecFile(ptr_tree, p, pos);
 
@@ -183,6 +184,7 @@ void insertNonFull(bTree* tree,bTreeNode* x, int recordKey, int recordPos)
 		x->keyRecArr[i+1] = recordKey;
         x->posRecArr[i+1] = recordPos;
 		(x->noOfRecs)++;
+        x->valid = true;
 
         writeFile(tree, x, x->pos);
 	}
@@ -266,13 +268,13 @@ void insert(bTree* tree, int recordKey, int recordPos)
 
 void traverse(bTree* tree, int root) {
     
-    if(-1 == root) {    
+    if(root == -1) {    
         return;
     }
 
     bTreeNode *toPrint = malloc(sizeof(bTreeNode));
     readFile(tree, toPrint, root);
-    dispNode(toPrint);
+    if(toPrint->valid) dispNode(toPrint);
 
     for(int i = 0; i < 2*t; i++) {
         traverse(tree, toPrint->children[i]);
@@ -307,10 +309,19 @@ void dispNode(bTreeNode* node)
 }
 
 void dispRec(recordNode* record) {
-    printf("Codigo do livro:%d\n",record->codigoLivro);
-    printf("Titulo:%s\n",record->titulo);
-    printf("Primeiro autor:%s\n",record->nomeCompletoPrimeiroAutor);
-    printf("Ano de publicacao:%d\n",record->anoPublicacao);
+    if(record->valid){
+        printf("Codigo do livro:%d\n",record->codigoLivro);
+        printf("Titulo:%s\n",record->titulo);
+        printf("Primeiro autor:%s\n",record->nomeCompletoPrimeiroAutor);
+        printf("Ano de publicacao:%d\n",record->anoPublicacao);
+    } else{
+        puts("Registro excluído:");
+        printf("Codigo do livro:%d\n",record->codigoLivro);
+        printf("Titulo:%s\n",record->titulo);
+        printf("Primeiro autor:%s\n",record->nomeCompletoPrimeiroAutor);
+        printf("Ano de publicacao:%d\n",record->anoPublicacao);
+    }
+    
 
 	printf("\n");
     printf("\n");

@@ -64,7 +64,7 @@ int main(int argc, char const *argv[])
 
 			free(res);
 		} else
-			printf("O livro com código %d não existe na biblioteca", key);
+			printf("O livro com código %d não existe na biblioteca\n", key);
     	
     }
 

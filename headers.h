@@ -7,7 +7,6 @@ struct rec
 {
 	bool valid; // indica se o registro foi eliminado ou não
 	int codigoLivro;
-	// rest
 	char titulo[30];
 	char nomeCompletoPrimeiroAutor[30];
 	int anoPublicacao;
