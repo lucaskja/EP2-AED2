@@ -79,7 +79,7 @@ void readFile(bTree* ptr_tree, bTreeNode* p, int pos) {
 void removeFile(bTree* ptr_tree, int pos) {    
     bTreeNode* p = (recordNode*) malloc(sizeof(bTreeNode));
     readFile(ptr_tree, p, pos);
-    p->valid = true;
+    p->valid = false;
 
     writeFile(ptr_tree, p, pos);
     free(p);
