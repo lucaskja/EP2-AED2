@@ -308,7 +308,7 @@ void printNode(bTreeNode* node)
     printf("\n");
 }
 
-void printRec(recordNode* record) {
+void dispRec(recordNode* record) {
     if(record->valid){
         printf("Codigo do livro:%d\n",record->codigoLivro);
         printf("Titulo:%s\n",record->titulo);
@@ -748,7 +748,7 @@ bool removeFromTree(bTree* tree, int key) {
     return true;
 }
 
-void p2(bTree* tree) {
+void hardPrint(bTree* tree) {
     bTreeNode* lido = (bTreeNode*) malloc(sizeof(bTreeNode));
     for(int i = 0; i < tree->nextPos; i++) {
         fseek(tree->fp, i * sizeof(bTreeNode), SEEK_SET);
@@ -763,15 +763,12 @@ void p2(bTree* tree) {
     free(lido);
 }
 
-void p3(bTree* tree) {
-    bTreeNode* lido = (bTreeNode*) malloc(sizeof(bTreeNode));
-    for(int i = 0; i < tree->nextPos; i++) {
-        readFile(tree, lido, i);
+void hardRecPrint(bTree* tree) {
+    recordNode* lido = (recordNode*) malloc(sizeof(recordNode));
 
-        if(lido->isLeaf <= 1)
-            printNode(lido);
-        else
-            printf("ERRO: isLeaf = %i\n\n", lido->isLeaf);
+    for(int i = 0; i < tree->nextRecPos; i++) {
+        readRecFile(tree, lido, i);
+        dispRec(lido);
     }
 
     free(lido);
@@ -779,10 +776,10 @@ void p3(bTree* tree) {
 
 void doublePrint(bTree* tree) {
     printf("=================");
-    printf("\nP1\n");
+    printf("\np1\n");
     p1(tree, tree->root);
 
     printf("=================");
     printf("\nHard print\n");
-    p2(tree);
+    hardPrint(tree);
 }
