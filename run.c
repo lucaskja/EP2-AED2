@@ -70,17 +70,17 @@ int main(int argc, char const *argv[])
 
 	if(!strcmp(option, "P1"))
     {
-	  traverse(tree, tree->root);
+	  p1(tree, tree->root);
     }
 
 	if(!strcmp(option, "P2"))
     {
-		hardPrint(tree);
+		p2(tree);
 	}
 
 	if(!strcmp(option, "P3"))
     {
-    	hardRecPrint(tree);
+    	p3(tree);
 	}
 
 }

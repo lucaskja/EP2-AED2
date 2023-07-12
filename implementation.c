@@ -266,7 +266,7 @@ void insert(bTree* tree, int recordKey, int recordPos)
 	}
 }
 
-void traverse(bTree* tree, int root) {
+void p1(bTree* tree, int root) {
     
     if(root == -1) {    
         return;
@@ -274,16 +274,16 @@ void traverse(bTree* tree, int root) {
 
     bTreeNode *toPrint = malloc(sizeof(bTreeNode));
     readFile(tree, toPrint, root);
-    if(toPrint->valid) dispNode(toPrint);
+    if(toPrint->valid) printNode(toPrint);
 
     for(int i = 0; i < 2*t; i++) {
-        traverse(tree, toPrint->children[i]);
+        p1(tree, toPrint->children[i]);
     }
 
     free(toPrint);
 }
 
-void dispNode(bTreeNode* node)
+void printNode(bTreeNode* node)
 {
 	printf("Position in node:%d\n",node->pos );
     printf("Number of Records:%d\n",node->noOfRecs );
@@ -308,7 +308,7 @@ void dispNode(bTreeNode* node)
     printf("\n");
 }
 
-void dispRec(recordNode* record) {
+void printRec(recordNode* record) {
     if(record->valid){
         printf("Codigo do livro:%d\n",record->codigoLivro);
         printf("Titulo:%s\n",record->titulo);
@@ -755,7 +755,7 @@ void hardPrint(bTree* tree) {
         fread(lido, sizeof(bTreeNode), 1, tree->fp);
 
         if(lido->isLeaf <= 1)
-            dispNode(lido);
+            printNode(lido);
         else
             printf("ERRO: isLeaf = %i\n\n", lido->isLeaf);
     }
@@ -768,7 +768,7 @@ void hardRecPrint(bTree* tree) {
 
     for(int i = 0; i < tree->nextRecPos; i++) {
         readRecFile(tree, lido, i);
-        dispRec(lido);
+        printRec(lido);
     }
 
     free(lido);
@@ -776,8 +776,8 @@ void hardRecPrint(bTree* tree) {
 
 void doublePrint(bTree* tree) {
     printf("=================");
-    printf("\nTraverse\n");
-    traverse(tree, tree->root);
+    printf("\np1\n");
+    p1(tree, tree->root);
 
     printf("=================");
     printf("\nHard print\n");
