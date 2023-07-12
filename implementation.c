@@ -274,7 +274,7 @@ void p1(bTree* tree, int root) {
 
     bTreeNode *toPrint = malloc(sizeof(bTreeNode));
     readFile(tree, toPrint, root);
-    if(toPrint->valid) printNode(toPrint);
+    printNode(toPrint);
 
     for(int i = 0; i < 2*t; i++) {
         p1(tree, toPrint->children[i]);

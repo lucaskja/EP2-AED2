@@ -43,11 +43,7 @@ int main(int argc, char const *argv[])
 	    int key;
 	    scanf("%d",&key);
 	    bool res = removeFromTree(tree,key);
-    	if(res)
-    	{
-    		printf("Successfull Deletion.\n");
-    	}
-    	else
+    	if(!res)
     	{
     		printf("Deletion not successful.\n");
     	}
